@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% block page_menu %}
+  <div class="controls pull-right">
+    <a class="btn btn-default btn-sm" href="{{ url_for('wiki.edit', name=name) }}">Edit</a>
+    <a class="btn btn-default btn-sm" href="{{ url_for('wiki.history', name=name) }}">History</a>
+  </div>
+{% endblock %}
+
+{% block body %}
+  {% if commit %}
+    <div id="page-action-bar">
+      <form method="POST" action="{{ url_for('wiki.revert') }}" class="ajax-form" data-redirect="{{ url_for('wiki.page', name=name) }}">
+        <input type="hidden" value="{{ name }}" name="name" />
+        <input type="hidden" value="{{ commit }}" name="commit" />
+        <input type="submit" class="btn btn-danger btn-sm" title="Revert back to this revision" value="Revert" />
+      </form>
+    </div>
+  {% endif %}
+  <div id="page-content"></div>
+
+{% endblock %}
+
+{% block js %}
+  <script>
+    $(function(){
+      {% if partials %}
+        {% for name, value in partials.items() %}
+          Handlebars.registerPartial({{ name|tojson|safe }}, {{ value.data|tojson|safe }});
+        {% endfor %}
+      {% endif %}
+      $("#page-content").html(MDR.convert({{ page.data|tojson|safe }})).show();
+    });
+  </script>
+{% endblock %}

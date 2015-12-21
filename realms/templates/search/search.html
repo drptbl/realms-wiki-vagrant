@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% block body %}
+  {% if results %}
+    <h3>Results for <em class="text-info">{{ request.args.get('q') }}</em></h3>
+    <div class="list-group">
+    {% for r in results %}
+      <a href="{{ url_for('wiki.page', name=r['name']) }}" class="list-group-item">
+      <h4 class="list-group-item-heading">{{ r['name'] }}</h4>
+      <p class="list-group-item-text">
+        {{ r['content'][:100] }}
+      </p>
+      </a>
+    {% endfor %}
+    </div>
+  {% else %}
+    <h3>No results found for <em class="text-info">{{ request.args.get('q') }}</em></h3>
+  {% endif %}
+{% endblock %}
